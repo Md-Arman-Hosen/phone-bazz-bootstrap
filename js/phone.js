@@ -1,108 +1,147 @@
-const loadPhones = async(searchText, dataLimit) =>{
-    const url = `https://openapi.programming-hero.com/api/phones?search=${searchText}`
-    const res = await fetch(url);
-    const data = await res.json();
-    displayPhones(data.data, dataLimit);
+const loadAll = async (searchText, dataLimit) => {
+    const url = `https://openapi.programming-hero.com/api/phones?search=${searchText}`;
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        displayPhones(data.data, dataLimit);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-const displayPhones = (phones, dataLimit) =>{
-    const phonesContainer = document.getElementById('phones-container');
-    phonesContainer.textContent = '';
-    // display 10 phones only 
-    const showAll = document.getElementById('show-all');
-    if(dataLimit && phones.length > 10) {
-        phones = phones.slice(0, 10);
-        showAll.classList.remove('d-none');
-    }
-    else{
-        showAll.classList.add('d-none');
+// display Phones Section
+const displayPhones = (phones, dataLimit) => {
+    const phoneCont = document.getElementById('phones-container');
+    const notFoundCont = document.getElementById('not-found-cont');
+    const btnShowAll = document.getElementById('show-all');
+    phoneCont.innerText = '';
+    console.log(dataLimit);
+
+
+    if (dataLimit && phones.length > 8) {
+        phones = phones.slice(0,8);
+        btnShowAll.classList.remove('d-none');
+        }
+    else {
+        btnShowAll.classList.add('d-none');
     }
     
+    // display no phone found
+    if (phones.length === 0) {
+        notFoundCont.classList.remove('d-none');
+    }
+    else {
+        notFoundCont.classList.add('d-none');
+    }
 
-    // display no phones found
-    const noPhone = document.getElementById('no-found-message');
-    if(phones.length === 0){
-        noPhone.classList.remove('d-none');
-    }
-    else{
-        noPhone.classList.add('d-none');
-    }
-    // display all phones
-    phones.forEach(phone =>{
-        const phoneDiv  = document.createElement('div');
+    spinnerTrigger(false);
+    phones.forEach(phone => {
+        const phoneDiv = document.createElement('div');
         phoneDiv.classList.add('col');
         phoneDiv.innerHTML = `
-        <div class="card p-4">
+        <div class="card h-100 p-3">
             <img src="${phone.image}" class="card-img-top" alt="...">
             <div class="card-body">
                 <h5 class="card-title">${phone.phone_name}</h5>
                 <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                <button onclick="loadPhoneDetails('${phone.slug}')" href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#phoneDetailModal">Show Details</button>
-                
+                <!-- Button trigger modal -->
+                <button onclick="loadModaldet('${phone.slug}')" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#phone-details-modal">
+                    See Details
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="phone-details-modal" tabindex="-1" aria-labelledby="phone-details-modalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="phone-modal-name">Modal title</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div id="ModalBody" class="modal-body">
+                            ...
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         `;
-        phonesContainer.appendChild(phoneDiv);
+        phoneCont.appendChild(phoneDiv);
     });
-    // stop spinner or loader
-    toggleSpinner(false);
 }
-
-const processSearch = (dataLimit) =>{
-    toggleSpinner(true);
-    const searchField = document.getElementById('search-field');
-    const searchText = searchField.value;
-    loadPhones(searchText, dataLimit);
-}
-
-// handle search button click
-document.getElementById('btn-search').addEventListener('click', function(){
-    // start loader
-    processSearch(10);
+    
+    
+//Click on Search
+document.getElementById('btn-search').addEventListener('click',function(){
+    searchProgress(8);
+})
+//Enter keypress on Search
+document.getElementById('search-field').addEventListener('keyup', event => {
+    if (event.key == 'Enter') {
+        searchProgress(8);
+    }
 })
 
-// search input field enter key handler
-document.getElementById('search-field').addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        processSearch(10);
-    }
-});
+//Search Functionality
+const searchProgress = (dataLimit) => {
+    spinnerTrigger(true);
+    let searchVal = document.getElementById('search-field').value;
+    loadAll(searchVal, dataLimit);
+    document.getElementById('search-field').value = '';
+}
 
-const toggleSpinner = isLoading => {
-    const loaderSection = document.getElementById('loader');
-    if(isLoading){
-        loaderSection.classList.remove('d-none')
+//spinner Function
+const spinnerTrigger = isloading => {
+    const spinner = document.getElementById('spinner');
+    if (isloading) {
+        spinner.classList.remove('d-none');
     }
-    else{
-        loaderSection.classList.add('d-none');
+    else {
+        spinner.classList.add('d-none');
     }
 }
 
+//Modal's Data
+const loadModaldet = async (id) => {
+    const url = `https://openapi.programming-hero.com/api/phone/${id}`;
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        displayModalData(data.data);
+    } catch (error) {
+        console.log(error);
+    }
+}
 
-// not the best way to load show All
-document.getElementById('btn-show-all').addEventListener('click', function(){
-    processSearch();
+const displayModalData = data =>{
+    document.getElementById('phone-modal-name').innerText = data.name
+    const dataBody = document.getElementById('ModalBody');
+    dataBody.innerHTML = `
+    <img src="${data.image}" class="img-fluid rounded mb-2" alt="...">
+    <p>Brand <span class="fw-bold">${data.brand}</span></p>
+    <p>Release Date: ${data.releaseDate}</p>
+    <p>Display Size <span class="fw-bold">${data.mainFeatures.displaySize}</span></p>
+    <p>Chipset <span class="fw-bold">${data.mainFeatures.chipSet}</span></p>
+    <p>Storage <span class="fw-bold">${data.mainFeatures.storage}</span></p>
+    <p>Memory <span class="fw-bold">${data.mainFeatures.memory}</span></p>
+    <p>Sensors: <span class="fw-bold">${data.mainFeatures.sensors}</span></p>
+    <p>WiFi: <span class="fw-bold">${data.others.WLAN}</span></p>
+    <p>Bluetooth: <span class="fw-bold">${data.others.Bluetooth}</span></p>
+    <p>GPS: <span class="fw-bold">${data.others.GPS}</span></p>
+    <p>NFc: <span class="fw-bold">${data.others.NFC}</span></p>
+    <p>Radio: <span class="fw-bold">${data.others.Radio}</span></p>
+    <p>USB: <span class="fw-bold">${data.others.USB}</span></p>
+    `;
+}
+
+//
+document.getElementById('btn-show-all').addEventListener('click', () => {
+    searchProgress();
 })
 
-const loadPhoneDetails = async id =>{
-    const url =`https://openapi.programming-hero.com/api/phone/${id}`;
-    const res = await fetch(url);
-    const data = await res.json();
-    displayPhoneDetails(data.data);
-}
 
-const displayPhoneDetails = phone =>{
-    console.log(phone);
-    const modalTitle = document.getElementById('phoneDetailModalLabel');
-    modalTitle.innerText = phone.name;
-    const phoneDetails = document.getElementById('phone-details');
-    console.log(phone.mainFeatures.sensors[0]);
-    phoneDetails.innerHTML = `
-        <p>Release Date: ${phone.releaseDate ? phone.releaseDate : 'No Release Date Found'}</p>
-        <p>Storage: ${phone.mainFeatures ? phone.mainFeatures.storage : 'No Storage Information '}</p>
-        <p>Others: ${phone.others ? phone.others.Bluetooth : 'No Bluetooth Information'}</p>
-        <p>Sensor: ${phone.mainFeatures.sensors ? phone.mainFeatures.sensors[0] : 'no sensor'}</p>
-    `
-}
-
-loadPhones('apple');
+//default homeLoad
+loadAll('iphone');
