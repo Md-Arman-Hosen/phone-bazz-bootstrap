@@ -120,5 +120,66 @@ const displayPhoneDetails = phone => {
     `
 }
 
+const displayContactUs = () =>{
+    const ContactUSContainer = document.getElementById('contact-us-container');
+    const ContactUsDiv = document.createElement('div');
+    ContactUsDiv.innerHTML= ` 
+            <div class="text-center">
+            <h2 class="mb-3 fw-bold">Contact With Us</h2>
+            <p>Thank you for considering our services. Please feel free to contact us. We look forward to hearing from you.
+            </p>
+        </div>
+        <div class="row mt-5 gy-3">
+            <div class="row col-12 mx-auto mt-3 col-lg-6 row-cols-1 row-cols-lg-2 text-center">
+                <div class="col p-3 border-bottom border-end bg-secondary-subtle bg-gradient bg-opacity-10">
+                    <img src="images/address.png" alt="">
+                    <h5 class="fw-bold mt-3 mb-3">Address</h5>
+                    <p>A108 Adam Street, <br> New York, NY 535022</p>
+                </div>
+                <div class="col p-3 border-bottom border-start bg-secondary-subtle bg-gradient bg-opacity-10">
+                    <img src="images/call.png" alt="">
+                    <h5 class="fw-bold mt-3 mb-3">Call Us</h5>
+                    <p>+88 01750 00 00 00 <br> +88 01750 00 00 00</p>
+                </div>
+                <div class="col p-3 border-top border-end bg-secondary-subtle bg-gradient bg-opacity-10">
+                    <img src="images/email.png" alt="">
+                    <h5 class="fw-bold mt-3 mb-3">Email Us</h5>
+                    <p>info@gmail.com <br>info@gmail.com</p>
+                </div>
+                <div class="col p-3 border-top border-start bg-secondary-subtle bg-gradient bg-opacity-10">
+                    <img src="images/time.png" alt="">
+                    <h5 class="fw-bold mt-3 mb-3">Working Hours</h5>
+                    <p>Mon-Fri: 9AM to 5PM <br> Sunday: 9AM to 1 PM</p>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <form action="">
+                    <input type="text" class="form-control mb-3 bg-secondary-subtle bg-gradient bg-opacity-10" placeholder="Enter Your Name" name="" id="">
+                    <input type="email" name="" placeholder="Enter Your Email" class="form-control mb-3 bg-secondary-subtle bg-gradient bg-opacity-10" id="">
+                    <input type="text" name="" placeholder="Subject" class="form-control mb-3 bg-secondary-subtle bg-gradient bg-opacity-10" id="">
+                    <textarea name="" class="form-control mb-3 bg-secondary-subtle bg-gradient bg-opacity-10" placeholder="Your Message" id="" cols="30" rows="10"></textarea>
+                    
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-danger opacity-75 " type="button">Send</button>
+                      </div>
+                </form>
+            </div>
+        </div>
+    `;
+    ContactUSContainer.appendChild(ContactUsDiv);
+}
+displayContactUs();
+
+
+const displayNav = () =>{
+    const footerContainer = document.getElementById('footer-container');
+    const footerDiv = document.createElement('div');
+    footerDiv.innerHTML= ` 
+    <p>Copyright © Arman - All right reserved by MAHP Ltd</p>
+    `;
+    footerContainer.appendChild(footerDiv);
+}
+displayNav();
+
 
 loadPhones("iphone");
