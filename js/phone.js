@@ -171,7 +171,7 @@ const displayContactUs = () =>{
 displayContactUs();
 
 
-const displayNav = () =>{
+const displayFooter = () =>{
     const footerContainer = document.getElementById('footer-container');
     const footerDiv = document.createElement('div');
     footerDiv.innerHTML= ` 
@@ -179,7 +179,7 @@ const displayNav = () =>{
     `;
     footerContainer.appendChild(footerDiv);
 }
-displayNav();
+displayFooter();
 
 
 loadPhones("iphone");
